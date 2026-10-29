@@ -1,13 +1,4 @@
-const { create } = require('../lib/store');
-
-function normalizeUrl(input) {
-  let url = String(input || '').trim();
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  try {
-    const u = new URL(url);
-    return u.protocol === 'http:' || u.protocol === 'https:' ? url : null;
-  } catch { return null; }
-}
+const { encode, normalizeUrl } = require('../lib/link');
 
 function sendJson(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -30,12 +21,7 @@ module.exports = async (req, res) => {
   const url = normalizeUrl(input);
   if (!url) return sendJson(res, 400, { error: 'Link không hợp lệ' });
 
-  try {
-    const code = await create(url);
-    const proto = req.headers['x-forwarded-proto'] || 'http';
-    const base = process.env.BASE_URL || `${proto}://${req.headers.host}`;
-    sendJson(res, 200, { code, url, short: `${base}/${code}` });
-  } catch (e) {
-    sendJson(res, 500, { error: 'Lỗi lưu link: ' + e.message });
-  }
+  const proto = req.headers['x-forwarded-proto'] || 'http';
+  const base = process.env.BASE_URL || `${proto}://${req.headers.host}`;
+  sendJson(res, 200, { url, short: `${base}/${encode(url)}` });
 };
