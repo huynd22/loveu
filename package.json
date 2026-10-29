@@ -1,13 +1,8 @@
 {
   "name": "shortlink",
   "version": "1.0.0",
-  "description": "Rút gọn link: dán link vào, nhận link mới redirect 302",
+  "description": "Dán link vào, nhận link mới redirect 302 (không cần database)",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "redis": "^4.7.0"
-  }
+  "scripts": { "start": "node server.js" },
+  "license": "MIT"
 }

@@ -1,4 +1,4 @@
-const { setNew, genCode } = require('../lib/store');
+const { encode, normalizeUrl } = require('../lib/link');
 
 function sendJson(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -13,28 +13,15 @@ async function readBody(req) {
   return JSON.parse(body);
 }
 
-function isValidUrl(s) {
-  try {
-    const u = new URL(s);
-    return u.protocol === 'http:' || u.protocol === 'https:';
-  } catch { return false; }
-}
-
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Chỉ hỗ trợ POST' });
 
-  let url;
-  try { url = String((await readBody(req)).url || '').trim(); } catch { url = ''; }
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  if (!isValidUrl(url)) return sendJson(res, 400, { error: 'Link không hợp lệ' });
+  let input;
+  try { input = (await readBody(req)).url; } catch { input = ''; }
+  const url = normalizeUrl(input);
+  if (!url) return sendJson(res, 400, { error: 'Link không hợp lệ' });
 
-  try {
-    let code;
-    do { code = genCode(); } while (!(await setNew(code, url)));
-    const proto = req.headers['x-forwarded-proto'] || 'http';
-    const base = process.env.BASE_URL || `${proto}://${req.headers.host}`;
-    sendJson(res, 200, { code, url, short: `${base}/${code}` });
-  } catch (e) {
-    sendJson(res, 500, { error: 'Lỗi lưu link: ' + e.message });
-  }
+  const proto = req.headers['x-forwarded-proto'] || 'http';
+  const base = process.env.BASE_URL || `${proto}://${req.headers.host}`;
+  sendJson(res, 200, { url, short: `${base}/${encode(url)}` });
 };
