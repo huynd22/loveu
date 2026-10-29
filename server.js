@@ -1,4 +1,4 @@
-// Chạy local: node server.js (trên Vercel không dùng file này)
+// Chạy local: node server.js (Vercel cũng tự nhận file này làm server)
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -15,6 +15,6 @@ http.createServer((req, res) => {
     return res.end(INDEX_HTML);
   }
   if (pathname === '/api/shorten') return shorten(req, res);
-  req.url = '/api/redirect?code=' + encodeURIComponent(pathname.slice(1));
+  // redirect tự lấy mã từ /huy-... hoặc /api/redirect?code=huy-...
   redirect(req, res);
 }).listen(PORT, () => console.log(`Shortlink chạy tại http://localhost:${PORT}`));
