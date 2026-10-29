@@ -1,4 +1,4 @@
-// Chạy local: node server.js (Vercel cũng tự nhận file này làm server)
+// Chạy local: npm start (Vercel không dùng file này, chỉ dùng api/ và public/)
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

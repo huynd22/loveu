@@ -2,7 +2,7 @@
   "name": "shortlink",
   "version": "1.0.0",
   "description": "Dán link vào, nhận link mới redirect 302 (không cần database)",
-  "main": "server.js",
-  "scripts": { "start": "node server.js" },
+  "main": "dev.js",
+  "scripts": { "start": "node dev.js" },
   "license": "MIT"
 }
