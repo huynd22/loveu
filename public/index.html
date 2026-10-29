@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rút gọn link</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f5f7; display: flex; justify-content: center; padding: 60px 16px; margin: 0; }
+  .card { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.08); width: 100%; max-width: 520px; }
+  h1 { margin: 0 0 16px; font-size: 22px; }
+  form { display: flex; gap: 8px; }
+  input { flex: 1; padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; min-width: 0; }
+  button { padding: 10px 16px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 15px; cursor: pointer; }
+  #result { margin-top: 18px; word-break: break-all; }
+  .err { color: #dc2626; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🔗 Rút gọn link</h1>
+  <form id="f">
+    <input id="url" placeholder="Dán link vào đây..." required autofocus>
+    <button>Tạo link</button>
+  </form>
+  <div id="result"></div>
+</div>
+<script>
+const f = document.getElementById('f'), out = document.getElementById('result');
+f.onsubmit = async e => {
+  e.preventDefault();
+  const r = await fetch('/api/shorten', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: document.getElementById('url').value })
+  });
+  const d = await r.json();
+  if (!r.ok) { out.innerHTML = '<span class="err">' + d.error + '</span>'; return; }
+  out.innerHTML = 'Link mới: <a href="' + d.short + '" target="_blank">' + d.short + '</a> <button id="cp">Copy</button>';
+  document.getElementById('cp').onclick = () => navigator.clipboard.writeText(d.short);
+};
+</script>
+</body>
+</html>
