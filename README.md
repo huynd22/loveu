@@ -1,8 +1,6 @@
 # Shortlink
 
-Dán link vào → nhận link mới, truy cập link mới sẽ redirect **302** tới link gốc.
-
-Không cần database: link gốc được mã hoá (base64url) ngay trong link mới.
+Dán link vào → nhận link mới dạng `/huy-1`, `/huy-2`, ... → truy cập sẽ redirect **302** tới link gốc.
 
 ## Chạy local
 
@@ -10,15 +8,17 @@ Không cần database: link gốc được mã hoá (base64url) ngay trong link 
 npm start
 ```
 
-Mở http://localhost:3000
+Mở http://localhost:3000 — dữ liệu lưu ở `links.json`.
 
 ## Deploy lên Vercel
 
-Import repo trên https://vercel.com/new → Deploy. Không cần cấu hình gì thêm.
+1. Import repo trên https://vercel.com/new → Deploy.
+2. Project → **Storage** → **Create Database** → **Upstash for Redis** (free) → **Connect** vào project.
+3. **Deployments** → Redeploy.
 
-Tuỳ chọn: biến `BASE_URL` (vd `https://s.example.com`) nếu dùng domain riêng.
+Biến tuỳ chọn: `LINK_PREFIX` (mặc định `huy-`), `BASE_URL` (nếu dùng domain riêng).
 
 ## API
 
-- `POST /api/shorten` body `{"url": "https://..."}` → `{ "short": "https://.../aHR0cHM6..." }`
+- `POST /api/shorten` body `{"url": "https://..."}` → `{ "code": "huy-1", "short": "https://.../huy-1" }`
 - `GET /:code` → `302 Location: <link gốc>`

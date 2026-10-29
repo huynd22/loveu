@@ -1,8 +1,9 @@
 {
   "name": "shortlink",
   "version": "1.0.0",
-  "description": "Dán link vào, nhận link mới redirect 302 (không cần database)",
+  "description": "Dán link vào, nhận link mới /huy-1, /huy-2... redirect 302",
   "main": "server.js",
   "scripts": { "start": "node server.js" },
+  "dependencies": { "redis": "4.7.0" },
   "license": "MIT"
 }
